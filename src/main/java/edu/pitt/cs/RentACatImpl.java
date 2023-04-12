@@ -18,9 +18,15 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean returnCat(int id) {
-		// TODO
+		// check if cat exists and if it is rented (not avialable)
+		if(catExists(id) && !catAvailable(id)) {
+			getCat(id).returnCat();	
+			return true;
+		}
+		
 		return false;
 	}
+
 
 	/**
 	 * Rent a cat. This should call the .rentCat() method on the cat for the
@@ -34,6 +40,12 @@ public class RentACatImpl implements RentACat {
 
 	public boolean rentCat(int id) {
 		// TODO
+		// check if cat exists and if it is rented (not avialable)
+		if(catExists(id) && catAvailable(id)) {
+			getCat(id).rentCat();	
+			return true;
+		}
+
 		return false;
 	}
 
@@ -49,7 +61,13 @@ public class RentACatImpl implements RentACat {
 
 	public String listCats() {
 		// TODO
-		return "WRITE CODE FOR THIS";
+		String list="";
+		for (Cat cat : cats){
+			if (catExists(cat.getId()) && catAvailable(cat.getId())) {
+				list += cat.toString() + "\n";
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -61,8 +79,20 @@ public class RentACatImpl implements RentACat {
 	 * @return true if cat exists in list, false otherwise
 	 */
 
-	public boolean catExists(int id) {
-		// TODO
+	public boolean catExists(int id){
+		// base case
+		if (cats == null || cats.size() == 0) {
+		
+			return false;
+		}
+
+		// loop through cats
+		for (Cat cat : cats) {
+			if (cat.getId() == id) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -79,14 +109,17 @@ public class RentACatImpl implements RentACat {
 
 		// null / zero-element check
 		if (cats == null || cats.size() == 0) {
+			// System.out.println("hello1");
 			return false;
 		}
 		Cat c = getCat(id);
 		if (c == null) {
 			// No cat of this ID exists, thus it is not available
+			
 			return false;
 		} else if (c.getRented()) {
 			// This cat exists, but has already been rented
+		
 			return false;
 		}
 
